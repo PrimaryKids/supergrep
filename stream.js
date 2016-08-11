@@ -132,6 +132,13 @@ app.get('/*.css', function (req, res, next) {
         });
     });
 });
+app.get('/feeds', function (req, res, next) {
+    var feed_names = config.files.map(function (file) {
+	return file.name;
+    });
+    res.json(feed_names);
+});
+
 //JS compiler/compressor
 app.get('/*.jsc', function (req, res, next) {
     var jscFilename = __dirname + STATIC_PATH + req.url;
@@ -139,7 +146,7 @@ app.get('/*.jsc', function (req, res, next) {
         if (!exists) {
             return next();
         }
-        if (cache.jsc[jscFilename]) {
+        if (cache.jsc[jscFilename] && !config.dev) {
             res.contentType('foo.js');
             return res.end(cache.jsc[jscFilename]);
         }
@@ -270,9 +277,9 @@ websocket.sockets.on('connection', function (client) {
                     self.listeners[feed] = listener;
 
                     logReaders[feed].on("line", listener);
-                }
+                } 
             });
-        }
+	 }
 
         if (data.unsubscribeFrom) {
             data.unsubscribeFrom.forEach(function (feed) {

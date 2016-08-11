@@ -177,6 +177,10 @@ fatal, last</p>
             <a class="irc" onclick="Etsy.Supergrep.submitIrc(prompt('Enter the @nick or #channel to send to', '#push'), <%= data.data %>); return false;" href="#">[IRC]</a>
         </script>
 
+	<script id="tpl_feedchk" type="text/html">
+	  <label class="display-option" for="log-<%= data.feed %>"><%= data.title %><input id="log-<%= data.feed %>" class="log-option" type="checkbox" data-log="<%= data.feed %>" tabindex="120" checked></label>
+	</script>
+
         <script id="tpl_logEntry" type="text/html">
             <li id="<%= data.id %>" class="log<% if (data.ns) { print(' ' + data.ns); } %><% if (data.severity) { print(' ' + data.severity); } %><% if (data.isFatal) { print(' fatal'); } %>">
                 <% if (data.server) { %>
