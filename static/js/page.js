@@ -196,9 +196,7 @@ jQuery(function ($) {
         Etsy.Supergrep.setHighlight(this.value);
     }).trigger('change');
 
-    //NOTE: this should be the last event defined/triggered
-    //Hook into changes to log selection
-    $('.log-option').bind('change', function() {
+    window.Etsy.Page.updateLogSubscriptions = function updateLogSubscriptions() {
         var enabledLogs = [],
             disabledLogs = [];
 
@@ -214,9 +212,29 @@ jQuery(function ($) {
 
       saveForm();
       Etsy.Supergrep.watchLogs(enabledLogs, disabledLogs);
-    });
+    };
 
-    $('#log-web').trigger('change');
+    // Populate the list of feeds on the UI
+    (function () {
+	jQuery.ajax({
+	    url: "/feeds",
+	    success: function (data) {
+		console.log("Received feed list callback");
+
+		// Sets the set of checkboxes for each feed
+		Etsy.Supergrep.setFeeds(data);
+
+		// Bind the newly created checkboxes so log subscriptions are
+		// updated when they are touched.
+		$('.log-option').bind('change', function() {
+		    window.Etsy.Page.updateLogSubscriptions();
+		});
+
+		// Do an initial update
+		window.Etsy.Page.updateLogSubscriptions();
+	    }
+	});
+    })();
 
     disableSaveForm = false;
 

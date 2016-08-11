@@ -88,6 +88,17 @@
         }, (sleep + 3) * 1000);
     }
 
+    sg.setFeeds = function Etsy$Supergrep$setFeeds (feedList) {
+	$("#logsource-options").empty();
+	feedList.forEach(function (item){
+	    var titled = item.charAt(0).toUpperCase() + item.substr(1).toLowerCase();
+	    var templateData = { feed: item, title: titled + ": " };
+	    var chk = $(CWinberry.Templating.render('tpl_feedchk', templateData));
+            $("#logsource-options").append(chk);
+	});
+    };
+
+
     sg.submitGist = function Etsy$Supergrep$submitGist (ns, timestamp, data) {
         $('#gistform-filename').val("supergrep[" + ns + "]" + timestamp);
         $('#gistform-data').val(unescape(data));
