@@ -27,8 +27,10 @@
 
   , "dependencies": {
       "dateformat": ">=1.x"
+    , "passport-google-auth": "1.0.x"
     , "less":       "1.1.x"
     , "mime":       "1.2.x"
+    , "passport":   "0.3.x"
     , "socket.io":  "0.8.x"
     , "uglify-js":  "1.2.x"
     , "validator":  "0.3.x"
