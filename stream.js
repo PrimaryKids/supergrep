@@ -64,6 +64,22 @@ app.use(express.bodyParser());
 app.use(express.query());
 app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
+if (config.googleAuth) {
+    var passport = require('passport')
+    var GoogleStrategy = require('passport-google-auth').Strategy;
+    passport.use(new GoogleStrategy({
+      clientId: config.googleAuth.clientId,
+      clientSecret: config.googleAuth.clientSecret,
+      callbackURL: config.googleAuth.callbackURL,
+      skipUserProfile: true,
+    },
+    function(accessToken, refreshToken, profile, done) {
+      return done(null, accessToken);
+    }
+    ));
+    app.use(passport.initialize());
+}
+
 //IRCCat proxy
 app.post('/irccat', function (req, res, next) {
         var postData = '';
@@ -252,6 +268,13 @@ app.all('/v2/:respath?', function (req, res, next) {
         (qs.length ? '?' + qs.join('?') : '')
         );
 });
+
+if (config.googleAuth) {
+    // Normally '/' is served by the static path configuration below, but if we want to use google
+    // auth to restrict access, we add a separate route here to apply authentication.
+    app.use("/", passport.authenticate('google', {session: false}), express.static(__dirname + STATIC_PATH));
+}
+
 app.use(express.staticCache());
 app.use(express.static(__dirname + STATIC_PATH));
 server = app.listen(config.port);
